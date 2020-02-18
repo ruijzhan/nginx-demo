@@ -1,0 +1,86 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  creationTimestamp: "2020-02-05T09:12:41Z"
+  generation: 11
+  name: dc-nginx-demo
+  namespace: demo-ruijzhan
+  resourceVersion: "187802744"
+  selfLink: /apis/apps.openshift.io/v1/namespaces/demo-ruijzhan/deploymentconfigs/dc-nginx-demo
+  uid: da60d042-806b-42c4-a08e-4fbfcb297731
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    app: nginx-demo
+  strategy:
+    activeDeadlineSeconds: 21600
+    resources: {}
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 600
+      updatePeriodSeconds: 1
+    type: Rolling
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: nginx-demo
+    spec:
+      containers:
+      - image: image-registry.openshift-image-registry.svc:5000/demo-ruijzhan/is-nginx-demo@sha256:324b9061bb5798ea1debdb27d18ce1d00786639dd80ef37e8c651bcac31d75ed
+        imagePullPolicy: IfNotPresent
+        name: nginx-demo
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+  test: false
+  triggers:
+  - type: ConfigChange
+  - imageChangeParams:
+      automatic: true
+      containerNames:
+      - dc-nginx-demo
+      from:
+        kind: ImageStreamTag
+        name: is-nginx-demo:v0.1
+        namespace: demo-ruijzhan
+    type: ImageChange
+status:
+  availableReplicas: 1
+  conditions:
+  - lastTransitionTime: "2020-02-05T10:35:06Z"
+    lastUpdateTime: "2020-02-05T10:35:06Z"
+    message: replication controller "dc-nginx-demo-7" successfully rolled out
+    reason: NewReplicationControllerAvailable
+    status: "True"
+    type: Progressing
+  - lastTransitionTime: "2020-02-05T10:35:19Z"
+    lastUpdateTime: "2020-02-05T10:35:19Z"
+    message: Deployment config has minimum availability.
+    status: "True"
+    type: Available
+  details:
+    causes:
+    - imageTrigger:
+        from:
+          kind: DockerImage
+          name: image-registry.openshift-image-registry.svc:5000/demo-ruijzhan/is-nginx-demo@sha256:324b9061bb5798ea1debdb27d18ce1d00786639dd80ef37e8c651bcac31d75ed
+      type: ImageChange
+    message: image change
+  latestVersion: 7
+  observedGeneration: 11
+  readyReplicas: 1
+  replicas: 1
+  unavailableReplicas: 0
+  updatedReplicas: 1
